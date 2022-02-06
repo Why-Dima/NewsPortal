@@ -1,0 +1,38 @@
+from news.models import *
+user1 = User.objects.create_user(username='Name')
+user2 = User.objects.create_user(username='Name2')
+Author.objects.create(users = user1)
+Author.objects.create(users = user2)
+Category.objects.create(name_category = 'категория1')
+Category.objects.create(name_category = 'категория2')
+Category.objects.create(name_category = 'категория3')
+Category.objects.create(name_category = 'категория4')
+author = Author.objects.get(id = 1)
+Post.objects.create(authors=author, paper_news = 'NE', header='header', text='text')
+Post.objects.create(authors=author, paper_news = 'NE', header='header1', text='text1')
+Post.objects.create(authors=author, paper_news = 'PA', header='header', text='text')
+Post.objects.get(id=1).categories.add(Category.objects.get(id=1))
+Post.objects.get(id=1).categories.add(Category.objects.get(id=2))
+...
+Comment.object.create(posts=Post.objects.get(id=1), users = Author.objects.get(id =1).users, text='text')
+...
+Comment.objects.get(id=1).comment_dislike()
+Comment.objects.get(id=1).comment_like()
+...
+author = Author.objects.get(id =1)
+author.update_rating()
+a = Author.objects.order_by('-rating_users')
+for i in a:
+     i.rating_users
+     i.users.username
+a = Post.objects.get(id=1)
+a.time_in
+a.authors
+a.rating_post
+a.header
+c = Comment.objects.order_by('-rating_comment')
+for i in c:
+    i.commit_in_time
+    i.users.username
+    i.rating_comment
+    i.text_commit
