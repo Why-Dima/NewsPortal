@@ -21,7 +21,10 @@ class Author(models.Model):
 
 
 class Category(models.Model):
-    name_category = models.CharField(max_length=64,unique=True)
+    name_category = models.CharField(max_length=64, unique=True)
+
+    def __str__(self) -> str:
+        return self.name_category
 
 
 class Post(models.Model):
@@ -50,6 +53,9 @@ class Post(models.Model):
     def preview(self):
         self.text = f'{self.text[:124]}...'
         return self.text
+
+    def get_absolute_url(self):
+        return f'/news/{self.id}'
 
 
 class PostCategory(models.Model):

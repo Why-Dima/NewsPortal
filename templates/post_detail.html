@@ -1,0 +1,53 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+ 
+{% block title %} Post list {% endblock title %}
+ 
+{% block content %}
+<table>
+    <tr>
+        <td>
+            Автор
+        </td>
+        <td>
+            Время добавления
+        </td>
+        <td>
+            Категория
+        </td>
+        <td>
+            Заголовок
+        </td>
+        <td>
+            Текст
+        </td>
+        <td>
+            рейтинг
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            {{ post.authors.users }}
+        </td>
+        <td>
+            {{ post.time_in }}
+        </td>
+        <td>
+            {% for i in post.categories.all %}
+                {{ i }}
+            {% endfor %}
+        </td>
+        <td>
+            {{ post.header }}
+        </td>
+        <td>
+            {{ post.text|truncatechars:50|censor }}
+        </td>
+        <td>
+            {{ post.rating_post }}
+        </td>
+    </tr>
+</table>
+{% endblock content %}
