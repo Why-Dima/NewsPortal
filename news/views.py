@@ -1,10 +1,11 @@
-from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView
+from django.views.generic import ListView, UpdateView, CreateView, DetailView, DeleteView, TemplateView
 from .models import Post
 from datetime import datetime
 from django.shortcuts import render
 from .filters import PostFilter
 from django.core.paginator import Paginator
 from .forms import PostForm
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 class PostList(ListView):
@@ -52,14 +53,16 @@ class PostDetailView(DetailView):
     queryset = Post.objects.all()
 
 
-class PostCreateView(CreateView):
+class PostCreateView(CreateView, PermissionRequiredMixin):
     template_name = 'post_create.html'
     form_class = PostForm
+    permission_required = ('news.add_post')
 
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
     template_name = 'post_create.html'
     form_class = PostForm
+    permission_required = ('news.change_post')
 
     # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте, который мы собираемся редактировать
     def get_object(self, **kwargs):
@@ -71,3 +74,14 @@ class PostDeleteView(DeleteView):
     template_name = 'post_delete.html'
     queryset = Post.objects.all()
     success_url = '/news/'
+
+
+class IndexView(LoginRequiredMixin, TemplateView):
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_authors'] = not self.request.user.groups.filter(name='authors').exists()
+        return context
+
+
