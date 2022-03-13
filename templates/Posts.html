@@ -11,9 +11,9 @@ news
     <h3>{{ time_now }}</h3>
     <h3> {{ posts|length }} {{' статей'}} </h3>
     <hr>
-
+<div style="text-align: center;">
     {% if posts %}
-        <table>
+        <table class="table_with_text_on_center" border="1" style="display: inline-block;">
             <tr>
                 <td>
                     Автор
@@ -43,9 +43,9 @@ news
                     {{ post.time_in }}
                 </td>
                 <td>
-                    {% for i in post.categories.all %}
-                    {{ i }}
-                    {% endfor %}
+
+                        {{ post.categories.name_category }}
+
                 </td>
                 <td>
                     {{ post.header }}
@@ -65,10 +65,11 @@ news
             </tr>
         {% endfor %}
         </table>
-        <a href="{% url 'post_create' %}">Добавить новую новость</a> <br>
+        <br>
     {% else %}
         <h2>Новостей нет!</h2>
     {% endif %}
+<a href="{% url 'post_create' %}">Добавить новую новость</a> <br>
 {% if is_paginated %}
 
     {% if page_obj.has_previous %}

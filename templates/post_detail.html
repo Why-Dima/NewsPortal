@@ -35,18 +35,27 @@
             {{ post.time_in }}
         </td>
         <td>
-            {% for i in post.categories.all %}
-                {{ i }}
-            {% endfor %}
+            {{ post.categories.name_category }}
         </td>
         <td>
             {{ post.header }}
         </td>
         <td>
-            {{ post.text|truncatechars:50|censor }}
+            {{ post.text|censor }}
         </td>
         <td>
             {{ post.rating_post }}
+        </td>
+        <td>
+            {% if is_not_subscribe %}
+            <!--GET запрос, который передает в наше представление значение категории, переменная post.category.id, -->
+            <!--которая в дальнейшем необходима для добавления подписчиков-->
+            <button><a href="add_subscribe/?pk={{ post.categories.id }}">Подписаться</a></button>
+            {% endif %}
+
+            {% if is_subscribe %}
+            <button><a href="del_subscribe/?pk={{ post.categories.id }}">Отписаться</a></button>
+            {% endif %}
         </td>
     </tr>
 </table>

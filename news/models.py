@@ -19,12 +19,16 @@ class Author(models.Model):
         self.rating_users = p_r * 3
         self.save()
 
+    def __str__(self):
+        return f'{self.users}'
+
 
 class Category(models.Model):
     name_category = models.CharField(max_length=64, unique=True)
+    subscribers = models.ManyToManyField(User, blank=True, )
 
-    def __str__(self) -> str:
-        return self.name_category
+    def __str__(self):
+        return f'{self.name_category}'
 
 
 class Post(models.Model):
@@ -32,10 +36,11 @@ class Post(models.Model):
     news = 'NE'
     paper = 'PA'
 
-    POSITIONS = [(news, 'Новости'), (paper, 'Статьи')]
+    POSITIONS = [(news, "Новости"), (paper, "Статьи")]
 
-    authors = models.ForeignKey(Author, on_delete=models.CASCADE)
-    categories = models.ManyToManyField(Category, through='PostCategory')
+    authors = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name='Автор', default="Dima")
+    # categories = models.ManyToManyField(Category, through='PostCategory')
+    categories = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, verbose_name= 'Категория(categories)')
     time_in = models.DateTimeField(auto_now_add=True)
     header = models.CharField(max_length=255)
     text = models.TextField()
@@ -58,9 +63,9 @@ class Post(models.Model):
         return f'/news/{self.id}'
 
 
-class PostCategory(models.Model):
-    posts = models.ForeignKey(Post, on_delete=models.CASCADE)
-    categories = models.ForeignKey(Category, on_delete=models.CASCADE)
+# class PostCategory(models.Model):
+#     posts = models.ForeignKey(Post, on_delete=models.CASCADE)
+#     categories = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
