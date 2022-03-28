@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    # 'news',
     'accounts',
     'fpages',
     'sign',
@@ -53,7 +52,7 @@ INSTALLED_APPS = [
 
     'django_apscheduler',
 
-
+    'django_celery_beat',
 
 ]
 
@@ -176,3 +175,11 @@ EMAIL_USE_SSL = True  # Яндекс использует ssl, подробне�
 
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+CELERY_BROKER_URL = 'redis://:19P5iAltZP0iIUwAYjjmnXraMQxuTX4E@redis-16719.c93.us-east-1-3.ec2.cloud.redislabs.com:16719/0'
+CELERY_RESULT_BACKEND = 'redis://:19P5iAltZP0iIUwAYjjmnXraMQxuTX4E@redis-16719.c93.us-east-1-3.ec2.cloud.redislabs.com:16719/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
