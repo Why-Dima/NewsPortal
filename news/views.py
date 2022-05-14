@@ -12,6 +12,12 @@ from django.template.loader import render_to_string
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 
+from django.core.cache import cache
+
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class PostList(ListView):
     model = Post
@@ -21,6 +27,7 @@ class PostList(ListView):
     form_class = PostForm
 
     def get_context_data(self, **kwargs):
+        logger.error("Hello! I'm error in your app. Enjoy:)")
         context = super().get_context_data(**kwargs)
         context['time_now'] = datetime.utcnow()  # добавим переменную текущей даты time_now
         context[
@@ -56,6 +63,17 @@ class PostSearch(PostList):
 class PostDetailView(DetailView):
     template_name = 'post_detail.html'
     queryset = Post.objects.all()
+
+    # def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+    #     obj = cache.get(f'post-{self.kwargs["pk"]}',
+    #                     None)
+
+        # если объекта нет в кэше, то получаем его и записываем в кэш
+        # if not obj:
+        #     obj = super().get_object(queryset=self.queryset)
+        #     cache.set(f'post-{self.kwargs["pk"]}', obj)
+        #
+        # return obj
 
     def post(self, request, *args, **kwargs):
         form = PostForm(request.POST)
@@ -122,18 +140,6 @@ class PostCreateView(CreateView, PermissionRequiredMixin):
     success_url = '/news/'
     #permission_required = ('news.add_post')
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)  # общаемся к содержимому контекста нашего представления
-    #     id = self.kwargs.get('pk')  # получаем ИД поста (выдергиваем из нашего объекта из модели Пост)
-    #     # формируем запрос, на выходе получим список имен пользователей subscribers__username, которые находятся
-    #     # в подписчиках данной группы, либо не находятся
-    #     qwe = Category.objects.filter(pk=Post.objects.get(pk=id).categories.id).values("subscribers__username")
-    #     # Добавляем новую контекстную переменную на нашу страницу, выдает либо правду, либо ложь, в зависимости от
-    #     # нахождения нашего пользователя в группе подписчиков subscribers
-    #     context['is_not_subscribe'] = not qwe.filter(subscribers__username=self.request.user).exists()
-    #     context['is_subscribe'] = qwe.filter(subscribers__username=self.request.user).exists()
-    #     return context
-
 
 class PostUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
     template_name = 'post_create.html'
@@ -142,6 +148,7 @@ class PostUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
 
     # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте, который мы собираемся редактировать
     def get_object(self, **kwargs):
+        logger.info('что-то не так')
         id = self.kwargs.get('pk')
         return Post.objects.get(pk=id)
 

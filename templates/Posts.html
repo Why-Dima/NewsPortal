@@ -13,6 +13,8 @@ news
     <hr>
 <div style="text-align: center;">
     {% if posts %}
+    {% load cache %}
+    {% cache 60 sidebar %}
         <table class="table_with_text_on_center" border="1" style="display: inline-block;">
             <tr>
                 <td>
@@ -64,31 +66,33 @@ news
                 </td>
             </tr>
         {% endfor %}
+    {% endcache %}
         </table>
         <br>
     {% else %}
         <h2>Новостей нет!</h2>
     {% endif %}
-<a href="{% url 'post_create' %}">Добавить новую новость</a> <br>
-{% if is_paginated %}
+    <a href="{% url 'post_create' %}">Добавить новую новость</a> <br>
+    {% if is_paginated %}
 
-    {% if page_obj.has_previous %}
-        <a href="?page=1">First</a>
-        <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
-    {% endif %}
-
-    {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-            <a>{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a href="?page={{ num }}">{{ num }}</a>
+        {% if page_obj.has_previous %}
+            <a href="?page=1">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
         {% endif %}
-    {% endfor %}
 
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">>>></a>
-        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <a>{{ num }}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">>>></a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+
     {% endif %}
-
-{% endif %}
+</div>
 {% endblock content %}
